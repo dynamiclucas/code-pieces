@@ -1,0 +1,32 @@
+import pandas as pd
+
+dataset_A = pd.DataFrame(dataset_A) 
+dataset_B = pd.DataFrame(dataset_B)
+
+print("Comparing two datasets...") 
+
+#遍历对比行数
+rows_A = len(dataset_A)
+rows_B = len(dataset_B)
+
+if rows_A != rows_B:
+    print("Row count is not equal")
+else:
+    print("Row count matched")
+    
+#遍历对比列标签    
+cols_A = list(dataset_A.columns)
+cols_B = list(dataset_B.columns) 
+
+if set(cols_A) != set(cols_B):
+    print("Column labels don't match")
+else:
+    print("Column labels match")
+
+#逐列对比非空值    
+for col in cols_A:
+    nulls_A = dataset_A[col].isnull().sum()
+    nulls_B = dataset_B[col].isnull().sum()
+    if nulls_A != nulls_B:
+        print(f"Column {col} null value count different")
+print("Null value comparison done")
