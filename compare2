@@ -1,0 +1,40 @@
+import pandas as pd
+
+# 读取两个Excel表格,假设 Sheet1 名称相同
+df1 = pd.read_excel('表格1.xlsx', sheet_name='Sheet1')
+df2 = pd.read_excel('表格2.xlsx', sheet_name='Sheet1')
+
+# 对比行数
+print(f"表格1行数:{len(df1)}") 
+print(f"表格2行数:{len(df2)}")
+
+# 对比列名 
+print(f"表格1列名:{list(df1.columns)}")
+print(f"表格2列名:{list(df2.columns)}")
+
+# 定义结果表结构
+result_cols = ['Item', 'Table1', 'Table2', 'Result']
+result_df = pd.DataFrame(columns=result_cols)
+
+# 逐列对比
+for col in df1.columns:
+    # 获取两表当前列非空值数量
+    col1_notna = df1[col].notna().sum()  
+    col2_notna = df2[col].notna().sum()
+    
+    # 判断是否相同 
+    if col1_notna == col2_notna:
+        result = '相同'
+    else:
+        result = '不同'
+    
+    # 添加到结果表    
+    result_df = result_df.append({
+        'Item': col,
+        'Table1': col1_notna,
+        'Table2': col2_notna,
+        'Result': result
+    }, ignore_index=True)
+
+# 输出结果表  
+print(result_df)
