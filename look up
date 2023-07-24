@@ -21,9 +21,25 @@ df_only_A = df_joined[~df_joined[index_col].isin(df_B[index_col])]
 df_only_B = df_joined[~df_joined[index_col].isin(df_A[index_col])]
 
 # 添加来源文件名标记   
-df_both['Source'] = 'Both'
-df_only_A['Source'] = 'Table A'
-df_only_B['Source'] = 'Table B'
+#df_both['Source'] = 'Both'
+#df_only_A['Source'] = 'Table A'
+#df_only_B['Source'] = 'Table B'
+
+# 使用.loc设置Source列
+df_joined.loc[df_joined[index_col].isin(df_A[index_col]) &
+              df_joined[index_col].isin(df_B[index_col]), 'Source'] = 'Both'
+
+df_joined.loc[~df_joined[index_col].isin(df_B[index_col]), 'Source'] = 'Table A'
+
+df_joined.loc[~df_joined[index_col].isin(df_A[index_col]), 'Source'] = 'Table B'
+
+df_both = df_joined[df_joined['Source'] == 'Both']
+df_only_A = df_joined[df_joined['Source'] == 'Table A']
+df_only_B = df_joined[df_joined['Source'] == 'Table B']
+
+df_both.to_csv('common_data.csv', index=False)  
+df_only_A.to_csv('only_in_A.csv', index=False)
+df_only_B.to_csv('only_in_B.csv', index=False)
 
 # 导出结果
 df_both.to_csv('common_data.csv', index=False)
