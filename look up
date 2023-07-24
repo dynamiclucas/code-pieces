@@ -1,0 +1,31 @@
+import pandas as pd
+
+# 读取两张表格数据
+df_A = pd.read_csv('表A.csv')  
+df_B = pd.read_csv('表B.csv')
+
+# 指定join的索引列
+index_col = 'ID' 
+
+# 在两表上进行merge操作
+df_joined = pd.merge(df_A, df_B, on=index_col, how='outer')
+
+# 找到同时出现的记录
+df_both = df_joined[df_joined[index_col].isin(df_A[index_col]) & 
+                    df_joined[index_col].isin(df_B[index_col])]
+
+# 只在A表中出现    
+df_only_A = df_joined[~df_joined[index_col].isin(df_B[index_col])] 
+
+# 只在B表中出现
+df_only_B = df_joined[~df_joined[index_col].isin(df_A[index_col])]
+
+# 添加来源文件名标记   
+df_both['Source'] = 'Both'
+df_only_A['Source'] = 'Table A'
+df_only_B['Source'] = 'Table B'
+
+# 导出结果
+df_both.to_csv('common_data.csv', index=False)
+df_only_A.to_csv('only_in_A.csv', index=False) 
+df_only_B.to_csv('only_in_B.csv', index=False)
